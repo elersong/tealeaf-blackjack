@@ -18,6 +18,11 @@
 # 7. Repeat steps 3 - 6 until the deck(s) is empty. At which time, repeat step 1.
 # 8. Game is over when the player either has no more money to bet or walks away.
 
+# Card addition rules
+# - An ace is worth either 1 or 11, whichever gets closer to 21 without going over
+# - Face cards (K, Q, J) are worth 10
+# - All number cards are worth their number, regardless of suit
+
 # =========================================================== Method Definitions
 
 
