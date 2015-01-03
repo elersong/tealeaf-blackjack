@@ -38,6 +38,8 @@ def game_setup # <= nil
   game_data = {}
   player_names = []
   
+  game_data[:decks] = (prompt "Choose Difficulty: 1 (easy) - 5 (hard)").to_i
+  
   player_names << (prompt "What is your name?") 
   player_names << File.readlines("names.txt").sample(rand(4)).map {|name| name.strip.capitalize}
   game_data[:names] = player_names.flatten
