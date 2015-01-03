@@ -26,6 +26,31 @@ require 'pry'
 
 # ============================================================================== Method Definitions
 
+def display_header # <= nil
+  system("clear")
+  puts "Let's Play BlackJack"
+  puts "--------------------"
+  puts
+end # => nil
+
+def game_setup # <= nil
+  display_header
+  game_data = {}
+  player_names = []
+  
+  player_names << (prompt "What is your name?") 
+  player_names << File.readlines("names.txt").sample(rand(4)).map {|name| name.strip.capitalize}
+  game_data[:names] = player_names.flatten
+  
+  wallets = []
+  hands = []
+  game_data[:names].count.times { wallets << 100; hands << [] }
+  game_data[:wallets] = wallets
+  game_data[:current_hands] = hands
+  
+  game_data
+end # => Hash
+
 def total_with_aces(subtotal, number_of_aces_in_hand) # <= Integer, Integer
   return 100 if (subtotal + number_of_aces_in_hand > 21)
   case number_of_aces_in_hand
@@ -45,11 +70,8 @@ end # => Integer
 
 def total_of_hand(hand) # <= Array
   total = 0
-  
-  # move all aces to the end of the array
   aces = ["[♠ A]","[♣ A]","[♥ A]","[♦ A]"]
   indices_of_aces = hand.each_index.select { |i| aces.include? hand[i] }
-  
   
   hand.each do |card|
     face = card.split("")[3]
@@ -58,11 +80,9 @@ def total_of_hand(hand) # <= Array
     value = 0 if face == "A"
     total += value
   end
-  
   total = total_with_aces(total, indices_of_aces.count)
-  
   return total, hand
-end # => Integer
+end # => Integer, Array
 
 def prepare_decks(number_of_decks) # <= Integer
   suits = ["♠","♣","♥","♦"]
@@ -78,13 +98,21 @@ def prepare_decks(number_of_decks) # <= Integer
   (deck *= number_of_decks).shuffle
 end # => Array
 
-5.times do
-  total, hand = total_of_hand(prepare_decks(1).sample(3))
-  puts hand.inspect
-  puts "total: #{total}"
-  puts ""
-end
+def prompt(msg) # <= String
+  say msg
+  gets.chomp
+end # => String
+
+def say(msg) # <= String
+  puts " => #{msg}"
+end # => nil
+
+def update_playing_table
+  system("clear")
+  
+end # => nil
 
 # ============================================================================== Game Logic
 
 
+game_setup
