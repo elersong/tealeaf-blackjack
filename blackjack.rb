@@ -29,8 +29,26 @@ require 'pry'
 def display_header # <= nil
   system("clear")
   puts "Let's Play BlackJack"
-  puts "--------------------"
+  puts "===================="
   puts
+end # => nil
+
+def format_player_status(game_hash, player_number) # <= Hash
+  example_hand_string = ""
+  example_hand = game_hash[:dealer_deck].sample(3)
+  
+  example_hand.each do |card|
+    example_hand_string << "#{card} "
+  end
+  
+  hand_total = (total_of_hand example_hand)[0]
+  hand_total = "BUSTED" if hand_total > 21
+  hand_total = "BLACKJACK" if hand_total == 21
+  
+  puts "#{game_hash[:names][player_number]} ($#{game_hash[:wallets][player_number]}) | Bet $#{game_hash[:current_bets][player_number]}"
+  puts "-----------------------"
+  puts "#{example_hand_string} (#{hand_total})"
+  puts ""
 end # => nil
 
 def game_setup # <= nil
@@ -46,9 +64,14 @@ def game_setup # <= nil
   
   wallets = []
   hands = []
-  game_data[:names].count.times { wallets << 100; hands << [] }
+  bets = []
+  game_data[:names].count.times { wallets << 100; hands << []; bets << 0 }
   game_data[:wallets] = wallets
   game_data[:current_hands] = hands
+  game_data[:current_bets] = bets
+  
+  game_data[:dealer_deck] = prepare_decks game_data[:decks]
+  game_data[:dealer_hand] = []
   
   game_data
 end # => Hash
@@ -109,12 +132,14 @@ def say(msg) # <= String
   puts " => #{msg}"
 end # => nil
 
-def update_playing_table
-  system("clear")
-  
+def update_playing_table(game_hash) # <= Hash
+  display_header
+  game_hash[:names].each_index do |index|
+    format_player_status game_hash, index
+  end
 end # => nil
 
 # ============================================================================== Game Logic
 
-
-game_setup
+game_hash = game_setup
+update_playing_table game_hash
